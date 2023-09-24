@@ -5,7 +5,7 @@
 		"strict": true,
 		"outDir": "./dist",
 		"rootDirs": ["src", "tests"],
-    "baseUrl": "src",
+    "baseUrl": "src"
 	},
 	"include": [
 		"src",
