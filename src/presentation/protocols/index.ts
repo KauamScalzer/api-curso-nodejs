@@ -1,1 +1,2 @@
-export { httpResponse, httpRequest } from './http'
+export { httpResponse } from './httpResponse'
+export { httpRequest } from './httpRequest'
