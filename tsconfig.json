@@ -1,0 +1,17 @@
+{
+	"compilerOptions": {
+		"target": "es2019",
+		"module": "commonjs",
+		"strict": true,
+		"outDir": "./dist",
+		"rootDirs": ["src", "tests"],
+    "baseUrl": "src",
+	},
+	"include": [
+		"src",
+		"jest.config.js"
+	],
+	"exclude": [
+		"node_modules"
+	]
+}
