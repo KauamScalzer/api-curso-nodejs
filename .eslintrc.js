@@ -6,6 +6,7 @@ module.exports = {
     sourceType: 'module'
   },
   rules: {
-    '@typescript-eslint/strict-boolean-expressions': 'off'
+    '@typescript-eslint/strict-boolean-expressions': 'off',
+    '@typescript-eslint/method-signature-style': 'off'
   }
 }
