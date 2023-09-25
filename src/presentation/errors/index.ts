@@ -1,1 +1,2 @@
-export { MissingParamError } from './missingParamError'
+export { MissingParamError } from './MissingParamError'
+export { InvalidParamError } from './InvalidParamError'
