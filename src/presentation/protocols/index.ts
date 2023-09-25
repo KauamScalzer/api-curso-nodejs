@@ -1,4 +1,4 @@
-export { httpResponse } from './httpResponse'
-export { httpRequest } from './httpRequest'
 export { Controller } from './controller'
 export { EmailValidator } from './emailValidator'
+export { HttpRequest } from './httpRequest'
+export { HttpResponse } from './httpResponse'
