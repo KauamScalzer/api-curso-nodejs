@@ -1,7 +1,7 @@
 import { HttpRequest, HttpResponse, Controller, EmailValidator } from '../protocols'
 import { MissingParamError, InvalidParamError } from '../errors'
 import { badRequest, serverError, ok } from '../helpers'
-import { CreateAccount } from 'domain/usecases'
+import { CreateAccount } from 'domain/usecases/account'
 
 export class SignUpController implements Controller {
   constructor (

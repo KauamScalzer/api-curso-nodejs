@@ -1,7 +1,7 @@
 import { SignUpController } from './SignUpController'
 import { MissingParamError, InvalidParamError, ServerError } from '../errors'
 import { EmailValidator } from '../protocols'
-import { CreateAccount, CreateAccountModel } from '../../domain/usecases'
+import { CreateAccount, CreateAccountModel } from '../../domain/usecases/account'
 import { AccountModel } from '../../domain/models'
 
 const makeCreateAccount = (): CreateAccount => {
