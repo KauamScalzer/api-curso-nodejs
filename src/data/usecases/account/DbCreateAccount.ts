@@ -11,12 +11,7 @@ export class DbCreateAccount implements CreateAccount {
 
   async create (data: CreateAccountModel): Promise<AccountModel> {
     const hashedPassword = await this.encrypter.encrypt(data.password)
-    await this.createAccount.create(Object.assign({}, data, { password: hashedPassword }))
-    return await new Promise(resolve => resolve({
-      id: 1,
-      name: '',
-      email: '',
-      password: ''
-    }))
+    const result = await this.createAccount.create(Object.assign({}, data, { password: hashedPassword }))
+    return result
   }
 }
