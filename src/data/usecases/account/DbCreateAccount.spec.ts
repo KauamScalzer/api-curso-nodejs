@@ -1,4 +1,4 @@
-import { Encrypter } from 'data/protocols/encrypter'
+import { Encrypter } from 'data/protocols/encrypter/encrypter'
 import { DbCreateAccount } from './DbCreateAccount'
 import { CreateAccountModel } from 'domain/usecases/account'
 import { AccountModel } from 'domain/models'
