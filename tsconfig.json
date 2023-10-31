@@ -1,12 +1,15 @@
 {
 	"compilerOptions": {
-		"target": "es2019",
+		"target": "es2016",
 		"module": "commonjs",
 		"strict": true,
 		"outDir": "./dist",
 		"rootDirs": ["src", "tests"],
     "baseUrl": "src",
-		"importHelpers": true
+		"importHelpers": true,
+		"emitDecoratorMetadata": true,
+		"experimentalDecorators": true,
+		"strictPropertyInitialization": false,
 	},
 	"include": [
 		"src",
@@ -14,5 +17,5 @@
 	],
 	"exclude": [
 		"node_modules"
-	]
+	],
 }
