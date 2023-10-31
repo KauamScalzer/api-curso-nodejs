@@ -9,7 +9,7 @@ const connectionOptions: ConnectionOptions = {
   database: 'api',
   host: 'localhost',
   port: 3306,
-  synchronize: false,
+  synchronize: true,
   logging: false,
   entities: [
     'src/infra/db/typeorm/models/*.ts',

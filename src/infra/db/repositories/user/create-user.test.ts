@@ -10,6 +10,10 @@ describe('CreateUser Repository', () => {
     await TypeormHelper.connect()
   })
 
+  afterEach(async () => {
+    await TypeormHelper.clear('user')
+  })
+
   afterAll(async () => {
     await TypeormHelper.desconnect()
   })
