@@ -1,13 +1,13 @@
 import { Encrypter } from 'data/protocols/encrypter'
-import { DbCreateAccount } from './DbCreateAccount'
-import { CreateAccountModel } from 'domain/usecases/account'
-import { AccountModel } from 'domain/models'
-import { CreateAccountRepository } from 'data/protocols/account'
+import { CreateUserUsecase } from './create-user-usecase'
+import { CreateUserModel } from 'domain/usecases/user'
+import { UserModel } from 'domain/models'
+import { CreateUserRepository } from 'data/protocols/user'
 
 interface SutTypes {
-  sut: DbCreateAccount
+  sut: CreateUserUsecase
   encrypterStub: Encrypter
-  createAccountRepositoryStub: CreateAccountRepository
+  createUserRepositoryStub: CreateUserRepository
 }
 
 const makeEncrypter = (): Encrypter => {
@@ -19,66 +19,66 @@ const makeEncrypter = (): Encrypter => {
   return new EncrypterStub()
 }
 
-const makeCreateAccountRepository = (): CreateAccountRepository => {
-  class CreateAccountRepositoryStub implements CreateAccountRepository {
-    async create (data: CreateAccountModel): Promise<AccountModel> {
-      const fakeAccount = {
+const makeCreateUserRepository = (): CreateUserRepository => {
+  class CreateUserRepositoryStub implements CreateUserRepository {
+    async create (data: CreateUserModel): Promise<UserModel> {
+      const fakeUser = {
         id: 1,
         name: 'valid_name',
         email: 'valid_email',
         password: 'hashed_password'
       }
-      return fakeAccount
+      return fakeUser
     }
   }
-  return new CreateAccountRepositoryStub()
+  return new CreateUserRepositoryStub()
 }
 
 const makeSut = (): SutTypes => {
   const encrypterStub = makeEncrypter()
-  const createAccountRepositoryStub = makeCreateAccountRepository()
-  const sut = new DbCreateAccount(encrypterStub, createAccountRepositoryStub)
+  const createUserRepositoryStub = makeCreateUserRepository()
+  const sut = new CreateUserUsecase(encrypterStub, createUserRepositoryStub)
   return {
     sut,
     encrypterStub,
-    createAccountRepositoryStub
+    createUserRepositoryStub
   }
 }
 
-describe('DbCreateAccount Usecase', () => {
+describe('CreateUserUsecase Usecase', () => {
   test('Should call Encrypter with correct password', async () => {
     const { sut, encrypterStub } = makeSut()
     const encryptSpy = jest.spyOn(encrypterStub, 'encrypt')
-    const accountData = {
+    const userData = {
       name: 'valid_name',
       email: 'valid_email',
       password: 'valid_password'
     }
-    await sut.create(accountData)
+    await sut.create(userData)
     expect(encryptSpy).toHaveBeenCalledWith('valid_password')
   })
 
   test('Should throw if Encrypter throws', async () => {
     const { sut, encrypterStub } = makeSut()
     jest.spyOn(encrypterStub, 'encrypt').mockReturnValueOnce(new Promise((resolve, reject) => reject(new Error())))
-    const accountData = {
+    const userData = {
       name: 'valid_name',
       email: 'valid_email',
       password: 'valid_password'
     }
-    const promise = sut.create(accountData)
+    const promise = sut.create(userData)
     await expect(promise).rejects.toThrow()
   })
 
-  test('Should call CreateAccountRepository with correct values', async () => {
-    const { sut, createAccountRepositoryStub } = makeSut()
-    const createSpy = jest.spyOn(createAccountRepositoryStub, 'create')
-    const accountData = {
+  test('Should call CreateUserRepository with correct values', async () => {
+    const { sut, createUserRepositoryStub } = makeSut()
+    const createSpy = jest.spyOn(createUserRepositoryStub, 'create')
+    const userData = {
       name: 'valid_name',
       email: 'valid_email',
       password: 'valid_password'
     }
-    await sut.create(accountData)
+    await sut.create(userData)
     expect(createSpy).toHaveBeenCalledWith({
       name: 'valid_name',
       email: 'valid_email',
@@ -86,26 +86,26 @@ describe('DbCreateAccount Usecase', () => {
     })
   })
 
-  test('Should throw if CreateAccountRepository throws', async () => {
-    const { sut, createAccountRepositoryStub } = makeSut()
-    jest.spyOn(createAccountRepositoryStub, 'create').mockReturnValueOnce(new Promise((resolve, reject) => reject(new Error())))
-    const accountData = {
+  test('Should throw if CreateUserRepository throws', async () => {
+    const { sut, createUserRepositoryStub } = makeSut()
+    jest.spyOn(createUserRepositoryStub, 'create').mockReturnValueOnce(new Promise((resolve, reject) => reject(new Error())))
+    const userData = {
       name: 'valid_name',
       email: 'valid_email',
       password: 'valid_password'
     }
-    const promise = sut.create(accountData)
+    const promise = sut.create(userData)
     await expect(promise).rejects.toThrow()
   })
 
-  test('Should return an account on sucess', async () => {
+  test('Should return an user on sucess', async () => {
     const { sut } = makeSut()
-    const accountData = {
+    const userData = {
       name: 'valid_name',
       email: 'valid_email',
       password: 'valid_password'
     }
-    const result = await sut.create(accountData)
+    const result = await sut.create(userData)
     expect(result).toEqual({
       id: 1,
       name: 'valid_name',

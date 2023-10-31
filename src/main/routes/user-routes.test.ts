@@ -2,7 +2,7 @@ import request from 'supertest'
 import app from '../config/app'
 
 describe('User Routes', () => {
-  test('Should return an account on sucess', async () => {
+  test('Should return an user on sucess', async () => {
     await request(app).post('/api/user')
       .send({
         name: 'Kauam',

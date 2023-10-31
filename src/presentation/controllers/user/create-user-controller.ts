@@ -1,12 +1,12 @@
-import { HttpRequest, HttpResponse, Controller, EmailValidator } from '../protocols'
-import { MissingParamError, InvalidParamError } from '../errors'
-import { badRequest, serverError, ok } from '../helpers'
-import { CreateAccount } from 'domain/usecases/account'
+import { HttpRequest, HttpResponse, Controller, EmailValidator } from '../../protocols'
+import { MissingParamError, InvalidParamError } from '../../errors'
+import { badRequest, serverError, ok } from '../../helpers'
+import { ICreateUserUsecase } from '../../../domain/usecases/user'
 
-export class SignUpController implements Controller {
+export class CreateUserController implements Controller {
   constructor (
     private readonly emailValidator: EmailValidator,
-    private readonly createAccount: CreateAccount
+    private readonly createUser: ICreateUserUsecase
   ) {}
 
   async handle (httpRequest: HttpRequest): Promise<HttpResponse> {
@@ -25,7 +25,7 @@ export class SignUpController implements Controller {
       if (!isValid) {
         return badRequest(new InvalidParamError('email'))
       }
-      const result = await this.createAccount.create({
+      const result = await this.createUser.create({
         name,
         email,
         password

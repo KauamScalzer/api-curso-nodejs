@@ -1,22 +1,22 @@
-import { SignUpController } from './SignUpController'
-import { MissingParamError, InvalidParamError, ServerError } from '../errors'
-import { EmailValidator } from '../protocols'
-import { CreateAccount, CreateAccountModel } from 'domain/usecases/account'
-import { AccountModel } from 'domain/models'
+import { CreateUserController } from './create-user-controller'
+import { MissingParamError, InvalidParamError, ServerError } from '../../errors'
+import { EmailValidator } from '../../protocols'
+import { ICreateUserUsecase, CreateUserModel } from 'domain/usecases/user'
+import { UserModel } from 'domain/models'
 
-const makeCreateAccount = (): CreateAccount => {
-  class CreateAccountStub implements CreateAccount {
-    async create (account: CreateAccountModel): Promise<AccountModel> {
-      const fakeAccount = {
+const makeCreateUserUsecase = (): ICreateUserUsecase => {
+  class CreateUserUsecaseStub implements ICreateUserUsecase {
+    async create (data: CreateUserModel): Promise<UserModel> {
+      const fakeUser = {
         id: 1,
         name: 'valid_name',
         email: 'valid_email@mail.com',
         password: 'valid_password'
       }
-      return await new Promise(resolve => resolve(fakeAccount))
+      return await new Promise(resolve => resolve(fakeUser))
     }
   }
-  return new CreateAccountStub()
+  return new CreateUserUsecaseStub()
 }
 
 const makeEmailValidator = (): EmailValidator => {
@@ -29,19 +29,19 @@ const makeEmailValidator = (): EmailValidator => {
 }
 
 interface SutTypes {
-  sut: SignUpController
+  sut: CreateUserController
   emailValidatorStub: EmailValidator
-  createAccountStub: CreateAccount
+  createUserUsecase: ICreateUserUsecase
 }
 
 const makeSut = (): SutTypes => {
   const emailValidatorStub = makeEmailValidator()
-  const createAccountStub = makeCreateAccount()
-  const sut = new SignUpController(emailValidatorStub, createAccountStub)
+  const createUserUsecase = makeCreateUserUsecase()
+  const sut = new CreateUserController(emailValidatorStub, createUserUsecase)
   return {
     sut,
     emailValidatorStub,
-    createAccountStub
+    createUserUsecase
   }
 }
 
@@ -149,9 +149,9 @@ describe('SignUp Controller', () => {
     expect(isValidSpy).toHaveBeenCalledWith('any_email@mail.com')
   })
 
-  test('Should call CreateAccount with correct values', async () => {
-    const { sut, createAccountStub } = makeSut()
-    const createSpy = jest.spyOn(createAccountStub, 'create')
+  test('Should call ICreateUserUsecase with correct values', async () => {
+    const { sut, createUserUsecase } = makeSut()
+    const createSpy = jest.spyOn(createUserUsecase, 'create')
     const httpRequest = {
       body: {
         name: 'any_name',
@@ -186,9 +186,9 @@ describe('SignUp Controller', () => {
     expect(httpResponse.body).toEqual(new ServerError())
   })
 
-  test('Should return 500 if CreateAccount throws', async () => {
-    const { sut, createAccountStub } = makeSut()
-    jest.spyOn(createAccountStub, 'create').mockImplementationOnce(async () => {
+  test('Should return 500 if ICreateUserUsecase throws', async () => {
+    const { sut, createUserUsecase } = makeSut()
+    jest.spyOn(createUserUsecase, 'create').mockImplementationOnce(async () => {
       return await Promise.reject(new Error())
     })
     const httpRequest = {

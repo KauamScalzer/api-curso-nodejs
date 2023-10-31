@@ -1,3 +1,3 @@
-export { badRequest } from './badRequest'
-export { serverError } from './serverError'
+export { badRequest } from './bad-request'
+export { serverError } from './server-error'
 export { ok } from './ok'
