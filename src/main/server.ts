@@ -1,10 +1,9 @@
 import 'reflect-metadata'
-import app from './config/app'
 import { ConnectionOptions, createConnection } from 'typeorm'
 
 const connectionOptions: ConnectionOptions = {
   type: 'mysql',
-  name: 'api',
+  name: 'default',
   username: 'root',
   password: 'pwd_root',
   database: 'api',

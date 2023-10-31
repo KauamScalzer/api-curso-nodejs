@@ -1,7 +1,7 @@
 import { CreateAccountRepository } from 'data/protocols/account'
 import { AccountModel } from 'domain/models'
 import { CreateAccountModel } from 'domain/usecases/account'
-import { User } from 'infra/db/typeorm/Models'
+import { User } from '../../typeorm/models'
 import { getRepository } from 'typeorm'
 
 export class CreateUser implements CreateAccountRepository {
