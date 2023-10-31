@@ -23,5 +23,3 @@ connection.then(async () => {
   const app = (await import('./config/app')).default
   app.listen(5050, () => console.log('Server running at localhost:5050'))
 }).catch(console.error)
-
-app.listen(5050, () => console.log('Server running at localhost:5050'))
