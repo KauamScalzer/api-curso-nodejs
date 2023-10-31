@@ -30,7 +30,7 @@ const makeSut = (): SutTypes => {
   }
 }
 
-describe('LogController Decorator', () => {
+describe('LogControllerDecorator', () => {
   test('Should call controller handle', async () => {
     const { sut, controllerStub } = makeSut()
     const handleSPy = jest.spyOn(controllerStub, 'handle')

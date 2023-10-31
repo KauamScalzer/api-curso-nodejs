@@ -31,9 +31,9 @@ export class CreateUserController implements Controller {
         password
       })
       return ok(result)
-    } catch (error) {
+    } catch (error: any) {
       console.log(error)
-      return serverError()
+      return serverError(error)
     }
   }
 }
