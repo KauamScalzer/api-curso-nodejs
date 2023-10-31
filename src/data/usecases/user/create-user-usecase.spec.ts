@@ -1,8 +1,8 @@
-import { Encrypter } from 'data/protocols/encrypter'
+import { Encrypter } from '../../protocols/encrypter'
 import { CreateUserUsecase } from './create-user-usecase'
-import { CreateUserModel } from 'domain/usecases/user'
-import { UserModel } from 'domain/models'
-import { CreateUserRepository } from 'data/protocols/user'
+import { CreateUserModel } from '../../../domain/usecases/user'
+import { UserModel } from '../../../domain/models'
+import { CreateUserRepository } from '../../protocols/user'
 
 interface SutTypes {
   sut: CreateUserUsecase

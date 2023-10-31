@@ -1,6 +1,6 @@
-import { CreateUserRepository } from 'data/protocols/user'
-import { UserModel } from 'domain/models'
-import { CreateUserModel } from 'domain/usecases/user'
+import { CreateUserRepository } from '../../../../data/protocols/user'
+import { UserModel } from '../../../../domain/models'
+import { CreateUserModel } from '../../../../domain/usecases/user'
 import { User } from '../../typeorm/models'
 import { getRepository } from 'typeorm'
 

@@ -1,8 +1,8 @@
 import { CreateUserController } from './create-user-controller'
 import { MissingParamError, InvalidParamError, ServerError } from '../../errors'
 import { EmailValidator } from '../../protocols'
-import { ICreateUserUsecase, CreateUserModel } from 'domain/usecases/user'
-import { UserModel } from 'domain/models'
+import { ICreateUserUsecase, CreateUserModel } from '../../../domain/usecases/user'
+import { UserModel } from '../../../domain/models'
 
 const makeCreateUserUsecase = (): ICreateUserUsecase => {
   class CreateUserUsecaseStub implements ICreateUserUsecase {
