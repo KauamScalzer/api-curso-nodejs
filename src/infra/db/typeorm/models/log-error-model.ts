@@ -5,11 +5,13 @@ export class LogError extends BaseEntity {
   @PrimaryGeneratedColumn()
   id: number
 
-  @Column()
-  error: string
+  @Column({
+    type: 'text'
+    })
+  stack: string
 
   @Column({
-    type: 'datetime',
+    type: 'datetime'
     })
   date: Date
 }

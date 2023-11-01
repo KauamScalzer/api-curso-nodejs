@@ -6,7 +6,7 @@ export class CreateLogError implements CreateLogErrorRepository {
   async create (data: string): Promise<void> {
     const repository = getRepository(LogError)
     await repository.save({
-      error: data,
+      stack: data,
       date: new Date()
     })
   }
