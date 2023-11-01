@@ -22,17 +22,24 @@ const makeEncrypter = (): Encrypter => {
 const makeCreateUserRepository = (): CreateUserRepository => {
   class CreateUserRepositoryStub implements CreateUserRepository {
     async create (data: CreateUserModel): Promise<UserModel> {
-      const fakeUser = {
-        id: 1,
-        name: 'valid_name',
-        email: 'valid_email',
-        password: 'hashed_password'
-      }
-      return fakeUser
+      return makeFakeUser()
     }
   }
   return new CreateUserRepositoryStub()
 }
+
+const makeFakeUser = (): UserModel => ({
+  id: 1,
+  name: 'valid_name',
+  email: 'valid_email',
+  password: 'hashed_password'
+})
+
+const makeFakeUserData = (): CreateUserModel => ({
+  name: 'valid_name',
+  email: 'valid_email',
+  password: 'valid_password'
+})
 
 const makeSut = (): SutTypes => {
   const encrypterStub = makeEncrypter()
@@ -49,36 +56,21 @@ describe('CreateUserUsecase Usecase', () => {
   test('Should call Encrypter with correct password', async () => {
     const { sut, encrypterStub } = makeSut()
     const encryptSpy = jest.spyOn(encrypterStub, 'encrypt')
-    const userData = {
-      name: 'valid_name',
-      email: 'valid_email',
-      password: 'valid_password'
-    }
-    await sut.create(userData)
+    await sut.create(makeFakeUserData())
     expect(encryptSpy).toHaveBeenCalledWith('valid_password')
   })
 
   test('Should throw if Encrypter throws', async () => {
     const { sut, encrypterStub } = makeSut()
     jest.spyOn(encrypterStub, 'encrypt').mockReturnValueOnce(new Promise((resolve, reject) => reject(new Error())))
-    const userData = {
-      name: 'valid_name',
-      email: 'valid_email',
-      password: 'valid_password'
-    }
-    const promise = sut.create(userData)
+    const promise = sut.create(makeFakeUserData())
     await expect(promise).rejects.toThrow()
   })
 
   test('Should call CreateUserRepository with correct values', async () => {
     const { sut, createUserRepositoryStub } = makeSut()
     const createSpy = jest.spyOn(createUserRepositoryStub, 'create')
-    const userData = {
-      name: 'valid_name',
-      email: 'valid_email',
-      password: 'valid_password'
-    }
-    await sut.create(userData)
+    await sut.create(makeFakeUserData())
     expect(createSpy).toHaveBeenCalledWith({
       name: 'valid_name',
       email: 'valid_email',
@@ -89,28 +81,13 @@ describe('CreateUserUsecase Usecase', () => {
   test('Should throw if CreateUserRepository throws', async () => {
     const { sut, createUserRepositoryStub } = makeSut()
     jest.spyOn(createUserRepositoryStub, 'create').mockReturnValueOnce(new Promise((resolve, reject) => reject(new Error())))
-    const userData = {
-      name: 'valid_name',
-      email: 'valid_email',
-      password: 'valid_password'
-    }
-    const promise = sut.create(userData)
+    const promise = sut.create(makeFakeUserData())
     await expect(promise).rejects.toThrow()
   })
 
   test('Should return an user on sucess', async () => {
     const { sut } = makeSut()
-    const userData = {
-      name: 'valid_name',
-      email: 'valid_email',
-      password: 'valid_password'
-    }
-    const result = await sut.create(userData)
-    expect(result).toEqual({
-      id: 1,
-      name: 'valid_name',
-      email: 'valid_email',
-      password: 'hashed_password'
-    })
+    const result = await sut.create(makeFakeUserData())
+    expect(result).toEqual(makeFakeUser())
   })
 })
