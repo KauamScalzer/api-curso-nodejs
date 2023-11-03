@@ -6,6 +6,7 @@ import { CreateUser } from '../../../infra/db/repositories/user'
 import { CreateLogError } from '../../../infra/db/repositories/log-error'
 import { Controller } from '../../../presentation/protocols'
 import { LogControllerDecorator } from '../../decorators'
+import { makeCreateUserValidation } from './create-user-validation-factory'
 
 export const makeCreateUserController = (): Controller => {
   const salt = 12
@@ -13,7 +14,7 @@ export const makeCreateUserController = (): Controller => {
   const bcryptAdapter = new BcryptAdapter(salt)
   const createUserUsecase = new CreateUserUsecase(bcryptAdapter, createUser)
   const emailValidatorAdapter = new EmailValidatorAdapter()
-  const createUserController = new CreateUserController(emailValidatorAdapter, createUserUsecase)
+  const createUserController = new CreateUserController(emailValidatorAdapter, createUserUsecase, makeCreateUserValidation())
   const createLogError = new CreateLogError()
   return new LogControllerDecorator(createUserController, createLogError)
 }

@@ -42,8 +42,8 @@ const makeEmailValidator = (): EmailValidator => {
 
 const makeValidation = (): Validation => {
   class ValidationStub implements Validation {
-    validate (data: any): Error | null {
-      return null
+    validate (data: any): Error | undefined {
+      return undefined
     }
   }
   return new ValidationStub()
