@@ -27,7 +27,7 @@ export class UserLoginController implements Controller {
       if (!accessToken) {
         return unauthorized()
       }
-      return ok('')
+      return ok({ accessToken })
     } catch (error: any) {
       return serverError(error)
     }
