@@ -8,7 +8,7 @@ export const TypeormHelper = {
       type: 'mysql',
       name: 'default',
       username: 'root',
-      password: 'pwd_root',
+      password: 'root',
       database: 'api_test',
       host: 'localhost',
       port: 3306,

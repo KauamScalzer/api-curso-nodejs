@@ -1,5 +1,5 @@
 import { Controller, HttpRequest, HttpResponse } from '../../protocols'
-import { badRequest, ok, serverError } from '../../helpers'
+import { badRequest, ok, serverError, unauthorized } from '../../helpers'
 import { InvalidParamError, MissingParamError } from '../../errors'
 import { EmailValidator } from '../../../presentation/protocols'
 import { UserAuthentication } from '../../../domain/usecases/user'
@@ -23,7 +23,10 @@ export class UserLoginController implements Controller {
       if (!isValid) {
         return badRequest(new InvalidParamError('email'))
       }
-      await this.userAuthentication.auth(email, password)
+      const accessToken = await this.userAuthentication.auth(email, password)
+      if (!accessToken) {
+        return unauthorized()
+      }
       return ok('')
     } catch (error: any) {
       return serverError(error)
