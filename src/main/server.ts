@@ -5,7 +5,7 @@ const connectionOptions: ConnectionOptions = {
   type: 'mysql',
   name: 'default',
   username: 'root',
-  password: 'pwd_root',
+  password: 'root',
   database: 'api',
   host: 'localhost',
   port: 3306,
