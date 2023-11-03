@@ -1,5 +1,5 @@
 import { UserLoginController } from './user-login-controller'
-import { badRequest, serverError, unauthorized, ok } from '../../helpers'
+import { badRequest, serverError, unauthorized, ok } from '../../helpers/http'
 import { InvalidParamError, MissingParamError } from '../../errors'
 import { EmailValidator, HttpRequest } from '../../../presentation/protocols'
 import { UserAuthentication } from '../../../domain/usecases/user'

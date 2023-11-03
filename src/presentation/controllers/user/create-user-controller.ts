@@ -1,16 +1,19 @@
 import { HttpRequest, HttpResponse, Controller, EmailValidator } from '../../protocols'
 import { MissingParamError, InvalidParamError } from '../../errors'
-import { badRequest, serverError, ok } from '../../helpers'
+import { badRequest, serverError, ok } from '../../helpers/http'
 import { ICreateUserUsecase } from '../../../domain/usecases/user'
+import { Validation } from '../../helpers/validators'
 
 export class CreateUserController implements Controller {
   constructor (
     private readonly emailValidator: EmailValidator,
-    private readonly createUser: ICreateUserUsecase
+    private readonly createUser: ICreateUserUsecase,
+    private readonly validation: Validation
   ) {}
 
   async handle (httpRequest: HttpRequest): Promise<HttpResponse> {
     try {
+      this.validation.validate(httpRequest.body)
       const requiredFields = ['name', 'email', 'password', 'passwordConfirmation']
       for (const field of requiredFields) {
         if (!httpRequest.body[field]) {

@@ -1,5 +1,5 @@
 import { Controller, HttpRequest, HttpResponse } from '../../protocols'
-import { badRequest, ok, serverError, unauthorized } from '../../helpers'
+import { badRequest, ok, serverError, unauthorized } from '../../helpers/http'
 import { InvalidParamError, MissingParamError } from '../../errors'
 import { EmailValidator } from '../../../presentation/protocols'
 import { UserAuthentication } from '../../../domain/usecases/user'
