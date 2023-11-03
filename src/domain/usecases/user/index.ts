@@ -1,2 +1,2 @@
 export { ICreateUserUsecase, CreateUserModel } from './create-user-usecase'
-export { UserAuthentication } from './user-authentication-usecase'
+export { UserAuthentication, UserAuthenticationModel } from './user-authentication-usecase'

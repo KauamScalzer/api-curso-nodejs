@@ -2,12 +2,12 @@ import { UserAuthenticationController } from './user-authentication-controller'
 import { badRequest, serverError, unauthorized, ok } from '../../helpers/http'
 import { MissingParamError } from '../../errors'
 import { HttpRequest } from '../../protocols'
-import { UserAuthentication } from '../../../domain/usecases/user'
+import { UserAuthentication, UserAuthenticationModel } from '../../../domain/usecases/user'
 import { Validation } from '../../helpers/validators'
 
 const makeUserAuthentication = (): UserAuthentication => {
   class UserAuthenticationStub implements UserAuthentication {
-    async auth (email: string, password: string): Promise<string | null> {
+    async auth (data: UserAuthenticationModel): Promise<string | null> {
       return await new Promise(resolve => resolve('any_token'))
     }
   }
@@ -43,7 +43,7 @@ const makeSut = (): SutTypes => {
 const makeFakeRequest = (): HttpRequest => ({
   body: {
     password: 'any_password',
-    email: 'any_mail@email.com'
+    email: 'any_mail@mail.com'
   }
 })
 
@@ -52,7 +52,10 @@ describe('UserAuthenticationController', () => {
     const { sut, userAuthenticationStub } = makeSut()
     const authSpy = jest.spyOn(userAuthenticationStub, 'auth')
     await sut.handle(makeFakeRequest())
-    expect(authSpy).toHaveBeenCalledWith('any_mail@email.com', 'any_password')
+    expect(authSpy).toHaveBeenCalledWith({
+      email: 'any_mail@mail.com',
+      password: 'any_password'
+    })
   })
 
   test('Should return 500 if UserAuthentication throws', async () => {

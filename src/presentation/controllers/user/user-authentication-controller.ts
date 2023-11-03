@@ -16,7 +16,10 @@ export class UserAuthenticationController implements Controller {
         return badRequest(error)
       }
       const { email, password } = httpRequest.body
-      const accessToken = await this.userAuthentication.auth(email, password)
+      const accessToken = await this.userAuthentication.auth({
+        email,
+        password
+      })
       if (!accessToken) {
         return unauthorized()
       }
