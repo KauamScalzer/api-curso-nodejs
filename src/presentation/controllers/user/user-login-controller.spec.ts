@@ -1,12 +1,12 @@
 import { UserLoginController } from './user-login-controller'
-import { badRequest, serverError, unauthorized } from '../../helpers'
+import { badRequest, serverError, unauthorized, ok } from '../../helpers'
 import { InvalidParamError, MissingParamError } from '../../errors'
 import { EmailValidator, HttpRequest } from '../../../presentation/protocols'
 import { UserAuthentication } from '../../../domain/usecases/user'
 
 const makeUserAuthentication = (): UserAuthentication => {
   class UserAuthenticationStub implements UserAuthentication {
-    async auth (email: string, password: string): Promise<string> {
+    async auth (email: string, password: string): Promise<string | null> {
       return await new Promise(resolve => resolve('any_token'))
     }
   }
@@ -103,5 +103,11 @@ describe('UserLoginController', () => {
     jest.spyOn(userAuthenticationStub, 'auth').mockReturnValueOnce(new Promise(resolve => resolve(null)))
     const httpRequest = await sut.handle(makeFakeRequest())
     expect(httpRequest).toEqual(unauthorized())
+  })
+
+  test('Should return 200 if valid credentials are provided', async () => {
+    const { sut } = makeSut()
+    const httpRequest = await sut.handle(makeFakeRequest())
+    expect(httpRequest).toEqual(ok({ accessToken: 'any_token' }))
   })
 })
