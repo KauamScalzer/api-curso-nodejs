@@ -1,11 +1,11 @@
 import { Controller, HttpRequest, HttpResponse } from '../../protocols'
 import { badRequest, ok, serverError, unauthorized } from '../../helpers/http'
-import { UserAuthentication } from '../../../domain/usecases/user'
+import { IUserAuthentication } from '../../../domain/usecases/user'
 import { Validation } from '../../helpers/validators'
 
 export class UserAuthenticationController implements Controller {
   constructor (
-    private readonly userAuthentication: UserAuthentication,
+    private readonly userAuthentication: IUserAuthentication,
     private readonly validation: Validation
   ) {}
 

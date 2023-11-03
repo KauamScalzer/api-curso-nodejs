@@ -2,11 +2,11 @@ import { UserAuthenticationController } from './user-authentication-controller'
 import { badRequest, serverError, unauthorized, ok } from '../../helpers/http'
 import { MissingParamError } from '../../errors'
 import { HttpRequest } from '../../protocols'
-import { UserAuthentication, UserAuthenticationModel } from '../../../domain/usecases/user'
+import { IUserAuthentication, UserAuthenticationModel } from '../../../domain/usecases/user'
 import { Validation } from '../../helpers/validators'
 
-const makeUserAuthentication = (): UserAuthentication => {
-  class UserAuthenticationStub implements UserAuthentication {
+const makeUserAuthentication = (): IUserAuthentication => {
+  class UserAuthenticationStub implements IUserAuthentication {
     async auth (data: UserAuthenticationModel): Promise<string | null> {
       return await new Promise(resolve => resolve('any_token'))
     }
@@ -25,7 +25,7 @@ const makeValidation = (): Validation => {
 
 interface SutTypes {
   sut: UserAuthenticationController
-  userAuthenticationStub: UserAuthentication
+  userAuthenticationStub: IUserAuthentication
   validationStub: Validation
 }
 
@@ -48,7 +48,7 @@ const makeFakeRequest = (): HttpRequest => ({
 })
 
 describe('UserAuthenticationController', () => {
-  test('Should call UserAuthentication with correct values', async () => {
+  test('Should call IUserAuthentication with correct values', async () => {
     const { sut, userAuthenticationStub } = makeSut()
     const authSpy = jest.spyOn(userAuthenticationStub, 'auth')
     await sut.handle(makeFakeRequest())
@@ -58,7 +58,7 @@ describe('UserAuthenticationController', () => {
     })
   })
 
-  test('Should return 500 if UserAuthentication throws', async () => {
+  test('Should return 500 if IUserAuthentication throws', async () => {
     const { sut, userAuthenticationStub } = makeSut()
     jest.spyOn(userAuthenticationStub, 'auth').mockImplementationOnce(() => {
       throw new Error()
