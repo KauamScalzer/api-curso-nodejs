@@ -3,7 +3,8 @@ import { MissingParamError, InvalidParamError, ServerError } from '../../errors'
 import { EmailValidator, HttpRequest } from '../../protocols'
 import { ICreateUserUsecase, CreateUserModel } from '../../../domain/usecases/user'
 import { UserModel } from '../../../domain/models'
-import { ok, serverError, badRequest } from '../../helpers'
+import { ok, serverError, badRequest } from '../../helpers/http'
+import { Validation } from '../../helpers/validators'
 
 const makeCreateUserUsecase = (): ICreateUserUsecase => {
   class CreateUserUsecaseStub implements ICreateUserUsecase {
@@ -39,20 +40,32 @@ const makeEmailValidator = (): EmailValidator => {
   return new EmailValidatorStub()
 }
 
+const makeValidation = (): Validation => {
+  class ValidationStub implements Validation {
+    validate (data: any): Error | null {
+      return null
+    }
+  }
+  return new ValidationStub()
+}
+
 interface SutTypes {
   sut: CreateUserController
   emailValidatorStub: EmailValidator
   createUserUsecase: ICreateUserUsecase
+  validationStub: Validation
 }
 
 const makeSut = (): SutTypes => {
   const emailValidatorStub = makeEmailValidator()
   const createUserUsecase = makeCreateUserUsecase()
-  const sut = new CreateUserController(emailValidatorStub, createUserUsecase)
+  const validationStub = makeValidation()
+  const sut = new CreateUserController(emailValidatorStub, createUserUsecase, validationStub)
   return {
     sut,
     emailValidatorStub,
-    createUserUsecase
+    createUserUsecase,
+    validationStub
   }
 }
 
@@ -147,6 +160,14 @@ describe('SignUp Controller', () => {
       email: 'any_email@mail.com',
       password: 'any_password'
     })
+  })
+
+  test('Should call Validation with correct values', async () => {
+    const { sut, validationStub } = makeSut()
+    const validateSpy = jest.spyOn(validationStub, 'validate')
+    const httpRequest = makeFakeRequest()
+    await sut.handle(makeFakeRequest())
+    expect(validateSpy).toHaveBeenCalledWith(httpRequest.body)
   })
 
   test('Should return 500 if EmailValidator throws', async () => {
