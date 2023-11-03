@@ -25,7 +25,7 @@ const makeSut = (): SutTypes => {
   }
 }
 
-describe('EmailValidation Controller', () => {
+describe('EmailValidation', () => {
   test('Should return an error if EmailValidator returns false', () => {
     const { sut, emailValidatorStub } = makeSut()
     jest.spyOn(emailValidatorStub, 'isValid').mockReturnValueOnce(false)
