@@ -2,7 +2,7 @@ import { UserModel } from 'domain/models'
 import { UserAuthenticationUsecase } from './user-authentication-usecase'
 import { GetOneUserByEmailRepository } from 'data/protocols/user'
 import { UserAuthenticationModel } from 'domain/usecases/user'
-import { HashComparer } from 'data/protocols/criptography'
+import { HashComparer, TokenGenerator } from 'data/protocols/criptography'
 
 const makeGetOneUserByEmailRepository = (): GetOneUserByEmailRepository => {
   class GetOneUserByEmailRepositoryStub implements GetOneUserByEmailRepository {
@@ -28,20 +28,32 @@ const makeHashComparer = (): HashComparer => {
   return new HashComparerStub()
 }
 
+const makeTokenGenerator = (): TokenGenerator => {
+  class TokenGeneratorStub implements TokenGenerator {
+    async generate (id: number): Promise<string> {
+      return await new Promise(resolve => resolve('any_token'))
+    }
+  }
+  return new TokenGeneratorStub()
+}
+
 interface SutTypes {
   sut: UserAuthenticationUsecase
   getOneUserByEmailRepositoryStub: GetOneUserByEmailRepository
   hashComparerStub: HashComparer
+  tokenGeneratorStub: TokenGenerator
 }
 
 const makeSut = (): SutTypes => {
   const getOneUserByEmailRepositoryStub = makeGetOneUserByEmailRepository()
   const hashComparerStub = makeHashComparer()
-  const sut = new UserAuthenticationUsecase(getOneUserByEmailRepositoryStub, hashComparerStub)
+  const tokenGeneratorStub = makeTokenGenerator()
+  const sut = new UserAuthenticationUsecase(getOneUserByEmailRepositoryStub, hashComparerStub, tokenGeneratorStub)
   return {
     sut,
     getOneUserByEmailRepositoryStub,
-    hashComparerStub
+    hashComparerStub,
+    tokenGeneratorStub
   }
 }
 
@@ -63,6 +75,13 @@ describe('UserAuthenticationUsecase', () => {
     const compareSpy = jest.spyOn(hashComparerStub, 'compare')
     await sut.auth(makeFakeAuthenticationData())
     expect(compareSpy).toHaveBeenCalledWith('valid_password', 'hashed_password')
+  })
+
+  test('Should call TokenGenerator with correct id', async () => {
+    const { sut, tokenGeneratorStub } = makeSut()
+    const generateSpy = jest.spyOn(tokenGeneratorStub, 'generate')
+    await sut.auth(makeFakeAuthenticationData())
+    expect(generateSpy).toHaveBeenCalledWith(1)
   })
 
   test('Should throw if GetOneUserByEmailRepository throws', async () => {
