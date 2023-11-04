@@ -2,7 +2,7 @@ import { UserModel } from 'domain/models'
 import { UserAuthenticationUsecase } from './user-authentication-usecase'
 import { GetOneUserByEmailRepository, UpdateUserRepository, UpdateUserRepositoryParams } from 'data/protocols/user'
 import { UserAuthenticationModel } from 'domain/usecases/user'
-import { HashComparer, TokenGenerator } from 'data/protocols/criptography'
+import { HashComparer, Encrypter } from 'data/protocols/criptography'
 
 const makeGetOneUserByEmailRepository = (): GetOneUserByEmailRepository => {
   class GetOneUserByEmailRepositoryStub implements GetOneUserByEmailRepository {
@@ -28,13 +28,13 @@ const makeHashComparer = (): HashComparer => {
   return new HashComparerStub()
 }
 
-const makeTokenGenerator = (): TokenGenerator => {
-  class TokenGeneratorStub implements TokenGenerator {
-    async generate (id: number): Promise<string> {
+const makeEncrypter = (): Encrypter => {
+  class EncrypterStub implements Encrypter {
+    async encrypt (value: number): Promise<string> {
       return await new Promise(resolve => resolve('any_token'))
     }
   }
-  return new TokenGeneratorStub()
+  return new EncrypterStub()
 }
 
 const makeUpdateUserRepository = (): UpdateUserRepository => {
@@ -48,21 +48,21 @@ interface SutTypes {
   sut: UserAuthenticationUsecase
   getOneUserByEmailRepositoryStub: GetOneUserByEmailRepository
   hashComparerStub: HashComparer
-  tokenGeneratorStub: TokenGenerator
+  encrypterStub: Encrypter
   updateUserRepositoryStub: UpdateUserRepository
 }
 
 const makeSut = (): SutTypes => {
   const getOneUserByEmailRepositoryStub = makeGetOneUserByEmailRepository()
   const hashComparerStub = makeHashComparer()
-  const tokenGeneratorStub = makeTokenGenerator()
+  const encrypterStub = makeEncrypter()
   const updateUserRepositoryStub = makeUpdateUserRepository()
-  const sut = new UserAuthenticationUsecase(getOneUserByEmailRepositoryStub, hashComparerStub, tokenGeneratorStub, updateUserRepositoryStub)
+  const sut = new UserAuthenticationUsecase(getOneUserByEmailRepositoryStub, hashComparerStub, encrypterStub, updateUserRepositoryStub)
   return {
     sut,
     getOneUserByEmailRepositoryStub,
     hashComparerStub,
-    tokenGeneratorStub,
+    encrypterStub,
     updateUserRepositoryStub
   }
 }
@@ -87,9 +87,9 @@ describe('UserAuthenticationUsecase', () => {
     expect(compareSpy).toHaveBeenCalledWith('valid_password', 'hashed_password')
   })
 
-  test('Should call TokenGenerator with correct id', async () => {
-    const { sut, tokenGeneratorStub } = makeSut()
-    const generateSpy = jest.spyOn(tokenGeneratorStub, 'generate')
+  test('Should call Encrypter with correct id', async () => {
+    const { sut, encrypterStub } = makeSut()
+    const generateSpy = jest.spyOn(encrypterStub, 'encrypt')
     await sut.auth(makeFakeAuthenticationData())
     expect(generateSpy).toHaveBeenCalledWith(1)
   })
@@ -115,9 +115,9 @@ describe('UserAuthenticationUsecase', () => {
     await expect(promise).rejects.toThrow()
   })
 
-  test('Should throw if TokenGenerator throws', async () => {
-    const { sut, tokenGeneratorStub } = makeSut()
-    jest.spyOn(tokenGeneratorStub, 'generate').mockReturnValueOnce(new Promise((resolve, reject) => reject(new Error())))
+  test('Should throw if Encrypter throws', async () => {
+    const { sut, encrypterStub } = makeSut()
+    jest.spyOn(encrypterStub, 'encrypt').mockReturnValueOnce(new Promise((resolve, reject) => reject(new Error())))
     const promise = sut.auth(makeFakeAuthenticationData())
     await expect(promise).rejects.toThrow()
   })
