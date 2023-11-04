@@ -1,6 +1,6 @@
 import { UserModel } from 'domain/models'
 import { UserAuthenticationUsecase } from './user-authentication-usecase'
-import { GetOneUserByEmailRepository } from 'data/protocols/user'
+import { GetOneUserByEmailRepository, UpdateUserRepository, UpdateUserRepositoryParams } from 'data/protocols/user'
 import { UserAuthenticationModel } from 'domain/usecases/user'
 import { HashComparer, TokenGenerator } from 'data/protocols/criptography'
 
@@ -37,23 +37,33 @@ const makeTokenGenerator = (): TokenGenerator => {
   return new TokenGeneratorStub()
 }
 
+const makeUpdateUserRepository = (): UpdateUserRepository => {
+  class UpdateUserRepositoryStub implements UpdateUserRepository {
+    async update (id: number, data: UpdateUserRepositoryParams): Promise<void> {}
+  }
+  return new UpdateUserRepositoryStub()
+}
+
 interface SutTypes {
   sut: UserAuthenticationUsecase
   getOneUserByEmailRepositoryStub: GetOneUserByEmailRepository
   hashComparerStub: HashComparer
   tokenGeneratorStub: TokenGenerator
+  updateUserRepositoryStub: UpdateUserRepository
 }
 
 const makeSut = (): SutTypes => {
   const getOneUserByEmailRepositoryStub = makeGetOneUserByEmailRepository()
   const hashComparerStub = makeHashComparer()
   const tokenGeneratorStub = makeTokenGenerator()
-  const sut = new UserAuthenticationUsecase(getOneUserByEmailRepositoryStub, hashComparerStub, tokenGeneratorStub)
+  const updateUserRepositoryStub = makeUpdateUserRepository()
+  const sut = new UserAuthenticationUsecase(getOneUserByEmailRepositoryStub, hashComparerStub, tokenGeneratorStub, updateUserRepositoryStub)
   return {
     sut,
     getOneUserByEmailRepositoryStub,
     hashComparerStub,
-    tokenGeneratorStub
+    tokenGeneratorStub,
+    updateUserRepositoryStub
   }
 }
 
@@ -82,6 +92,13 @@ describe('UserAuthenticationUsecase', () => {
     const generateSpy = jest.spyOn(tokenGeneratorStub, 'generate')
     await sut.auth(makeFakeAuthenticationData())
     expect(generateSpy).toHaveBeenCalledWith(1)
+  })
+
+  test('Should call UpdateUserRepository with correct values', async () => {
+    const { sut, updateUserRepositoryStub } = makeSut()
+    const updateSpy = jest.spyOn(updateUserRepositoryStub, 'update')
+    await sut.auth(makeFakeAuthenticationData())
+    expect(updateSpy).toHaveBeenCalledWith(1, { acessToken: 'any_token' })
   })
 
   test('Should throw if GetOneUserByEmailRepository throws', async () => {
