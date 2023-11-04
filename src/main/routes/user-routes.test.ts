@@ -31,7 +31,7 @@ describe('User Routes', () => {
   })
 
   describe('POST /user/authentication', () => {
-    test('Should return an access token on sucess', async () => {
+    test('Should return 200 on sucess', async () => {
       const password = await hash('123', 12)
       await getRepository('user').save({
         name: 'kauam',
@@ -44,6 +44,15 @@ describe('User Routes', () => {
           password: '123'
         })
         .expect(200)
+    })
+
+    test('Should return 401 on authentication', async () => {
+      await request(app).post('/api/user/authentication')
+        .send({
+          email: 'kauam@gmail.com',
+          password: '123'
+        })
+        .expect(401)
     })
   })
 })
