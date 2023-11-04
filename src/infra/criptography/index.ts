@@ -1,1 +1,1 @@
-export { BcryptAdapter } from './bcrypt-adapter'
+export { HashBcryptAdapter } from './hash-bcrypt-adapter'
