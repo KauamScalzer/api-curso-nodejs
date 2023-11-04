@@ -1,11 +1,11 @@
 import { TypeormHelper } from '../../helpers'
-import { CreateUser } from './create-user'
+import { CreateUserRepository } from './create-user-repository'
 
-const makeSut = (): CreateUser => {
-  return new CreateUser()
+const makeSut = (): CreateUserRepository => {
+  return new CreateUserRepository()
 }
 
-describe('CreateUser Repository', () => {
+describe('CreateUserRepository', () => {
   beforeAll(async () => {
     await TypeormHelper.connect()
   })

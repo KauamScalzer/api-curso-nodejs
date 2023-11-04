@@ -1,10 +1,10 @@
-import { CreateUserRepository } from '../../../../data/protocols/user'
+import { ICreateUserRepository } from '../../../../data/protocols/user'
 import { UserModel } from '../../../../domain/models'
 import { CreateUserModel } from '../../../../domain/usecases/user'
 import { User } from '../../typeorm/models'
 import { getRepository } from 'typeorm'
 
-export class CreateUser implements CreateUserRepository {
+export class CreateUserRepository implements ICreateUserRepository {
   async create (data: CreateUserModel): Promise<UserModel> {
     const entity = new User()
     Object.assign(entity, data)

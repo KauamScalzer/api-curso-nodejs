@@ -1,1 +1,1 @@
-export { CreateLogError } from './create-log-error'
+export { CreateLogErrorRepository } from './create-log-error-repository'

@@ -1,4 +1,4 @@
-export interface UpdateUserRepository {
+export interface IUpdateUserRepository {
   update (id: number, data: UpdateUserRepositoryParams): Promise<void>
 }
 

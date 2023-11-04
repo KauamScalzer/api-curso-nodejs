@@ -2,12 +2,12 @@ import { Hasher } from '../../protocols/criptography'
 import { CreateUserUsecase } from './create-user-usecase'
 import { CreateUserModel } from '../../../domain/usecases/user'
 import { UserModel } from '../../../domain/models'
-import { CreateUserRepository } from '../../protocols/user'
+import { ICreateUserRepository } from '../../protocols/user'
 
 interface SutTypes {
   sut: CreateUserUsecase
   hasherStub: Hasher
-  createUserRepositoryStub: CreateUserRepository
+  createUserRepositoryStub: ICreateUserRepository
 }
 
 const makeHasher = (): Hasher => {
@@ -19,8 +19,8 @@ const makeHasher = (): Hasher => {
   return new HasherStub()
 }
 
-const makeCreateUserRepository = (): CreateUserRepository => {
-  class CreateUserRepositoryStub implements CreateUserRepository {
+const makeCreateUserRepository = (): ICreateUserRepository => {
+  class CreateUserRepositoryStub implements ICreateUserRepository {
     async create (data: CreateUserModel): Promise<UserModel> {
       return makeFakeUser()
     }
@@ -67,7 +67,7 @@ describe('CreateUserUsecase', () => {
     await expect(promise).rejects.toThrow()
   })
 
-  test('Should call CreateUserRepository with correct values', async () => {
+  test('Should call ICreateUserRepository with correct values', async () => {
     const { sut, createUserRepositoryStub } = makeSut()
     const createSpy = jest.spyOn(createUserRepositoryStub, 'create')
     await sut.create(makeFakeUserData())
@@ -78,7 +78,7 @@ describe('CreateUserUsecase', () => {
     })
   })
 
-  test('Should throw if CreateUserRepository throws', async () => {
+  test('Should throw if ICreateUserRepository throws', async () => {
     const { sut, createUserRepositoryStub } = makeSut()
     jest.spyOn(createUserRepositoryStub, 'create').mockReturnValueOnce(new Promise((resolve, reject) => reject(new Error())))
     const promise = sut.create(makeFakeUserData())

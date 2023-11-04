@@ -1,13 +1,13 @@
 import { TypeormHelper } from '../../helpers'
-import { UpdateUser } from './update-user'
+import { UpdateUserRepository } from './update-user-repository'
 import { User } from '../../typeorm/models'
 import { getRepository } from 'typeorm'
 
-const makeSut = (): UpdateUser => {
-  return new UpdateUser()
+const makeSut = (): UpdateUserRepository => {
+  return new UpdateUserRepository()
 }
 
-describe('UpdateUser Repository', () => {
+describe('UpdateUserRepository', () => {
   beforeAll(async () => {
     await TypeormHelper.connect()
     await getRepository(User).save({

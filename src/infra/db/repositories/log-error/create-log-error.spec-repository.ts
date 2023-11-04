@@ -1,12 +1,12 @@
 import { getRepository } from 'typeorm'
 import { TypeormHelper } from '../../helpers'
-import { CreateLogError } from './create-log-error'
+import { CreateLogErrorRepository } from './create-log-error-repository'
 
-const makeSut = (): CreateLogError => {
-  return new CreateLogError()
+const makeSut = (): CreateLogErrorRepository => {
+  return new CreateLogErrorRepository()
 }
 
-describe('CreateLogError  Repository', () => {
+describe('CreateLogErrorRepository', () => {
   beforeAll(async () => {
     await TypeormHelper.connect()
   })

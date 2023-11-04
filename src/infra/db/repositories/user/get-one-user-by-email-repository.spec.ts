@@ -1,12 +1,12 @@
 import { TypeormHelper } from '../../helpers'
-import { GetOneUserByEmail } from './get-one-user-by-email'
+import { GetOneUserByEmailRepository } from './get-one-user-by-email-repository'
 import { getRepository } from 'typeorm'
 
-const makeSut = (): GetOneUserByEmail => {
-  return new GetOneUserByEmail()
+const makeSut = (): GetOneUserByEmailRepository => {
+  return new GetOneUserByEmailRepository()
 }
 
-describe('GetOneUserByEmail Repository', () => {
+describe('GetOneUserByEmailRepository Repository', () => {
   beforeAll(async () => {
     await TypeormHelper.connect()
   })

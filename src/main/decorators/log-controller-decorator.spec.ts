@@ -1,7 +1,7 @@
 import { Controller, HttpRequest, HttpResponse } from '../../presentation/protocols'
-import { LogControllerDecorator } from './log'
+import { LogControllerDecorator } from './log-controller-decorator'
 import { serverError, ok } from '../../presentation/helpers/http'
-import { CreateLogErrorRepository } from '../../data/protocols/log-error'
+import { ICreateLogErrorRepository } from '../../data/protocols/log-error'
 import { UserModel } from '../../domain/models'
 
 const makeController = (): Controller => {
@@ -13,8 +13,8 @@ const makeController = (): Controller => {
   return new ControllerStub()
 }
 
-const makeCreateLogErrorRepository = (): CreateLogErrorRepository => {
-  class CreateLogErrorRepositoryStub implements CreateLogErrorRepository {
+const makeCreateLogErrorRepository = (): ICreateLogErrorRepository => {
+  class CreateLogErrorRepositoryStub implements ICreateLogErrorRepository {
     async create (data: string): Promise<void> {
       return await new Promise(resolve => resolve())
     }
@@ -25,7 +25,7 @@ const makeCreateLogErrorRepository = (): CreateLogErrorRepository => {
 interface SutTypes {
   sut: LogControllerDecorator
   controllerStub: Controller
-  createLogErrorRepositoryStub: CreateLogErrorRepository
+  createLogErrorRepositoryStub: ICreateLogErrorRepository
 }
 
 const makeSut = (): SutTypes => {
@@ -75,7 +75,7 @@ describe('LogControllerDecorator', () => {
     expect(result).toEqual(ok(makeFakeUser()))
   })
 
-  test('Should call CreateLogErrorRepository with correct error if controller returns a server error', async () => {
+  test('Should call ICreateLogErrorRepository with correct error if controller returns a server error', async () => {
     const { sut, controllerStub, createLogErrorRepositoryStub } = makeSut()
     const logSpy = jest.spyOn(createLogErrorRepositoryStub, 'create')
     jest.spyOn(controllerStub, 'handle').mockReturnValueOnce(new Promise(resolve => resolve(makeFakeServerError())))

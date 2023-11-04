@@ -1,11 +1,11 @@
 import { UserModel } from 'domain/models'
 import { UserAuthenticationUsecase } from './user-authentication-usecase'
-import { GetOneUserByEmailRepository, UpdateUserRepository, UpdateUserRepositoryParams } from 'data/protocols/user'
+import { IGetOneUserByEmailRepository, IUpdateUserRepository, UpdateUserRepositoryParams } from 'data/protocols/user'
 import { UserAuthenticationModel } from 'domain/usecases/user'
 import { HashComparer, Encrypter } from 'data/protocols/criptography'
 
-const makeGetOneUserByEmailRepository = (): GetOneUserByEmailRepository => {
-  class GetOneUserByEmailRepositoryStub implements GetOneUserByEmailRepository {
+const makeGetOneUserByEmailRepository = (): IGetOneUserByEmailRepository => {
+  class GetOneUserByEmailRepositoryStub implements IGetOneUserByEmailRepository {
     async getOne (data: string): Promise<UserModel | undefined> {
       const fakeUser: UserModel = {
         id: 1,
@@ -37,8 +37,8 @@ const makeEncrypter = (): Encrypter => {
   return new EncrypterStub()
 }
 
-const makeUpdateUserRepository = (): UpdateUserRepository => {
-  class UpdateUserRepositoryStub implements UpdateUserRepository {
+const makeUpdateUserRepository = (): IUpdateUserRepository => {
+  class UpdateUserRepositoryStub implements IUpdateUserRepository {
     async update (id: number, data: UpdateUserRepositoryParams): Promise<void> {}
   }
   return new UpdateUserRepositoryStub()
@@ -46,10 +46,10 @@ const makeUpdateUserRepository = (): UpdateUserRepository => {
 
 interface SutTypes {
   sut: UserAuthenticationUsecase
-  getOneUserByEmailRepositoryStub: GetOneUserByEmailRepository
+  getOneUserByEmailRepositoryStub: IGetOneUserByEmailRepository
   hashComparerStub: HashComparer
   encrypterStub: Encrypter
-  updateUserRepositoryStub: UpdateUserRepository
+  updateUserRepositoryStub: IUpdateUserRepository
 }
 
 const makeSut = (): SutTypes => {
@@ -73,7 +73,7 @@ const makeFakeAuthenticationData = (): UserAuthenticationModel => ({
 })
 
 describe('UserAuthenticationUsecase', () => {
-  test('Should call GetOneUserByEmailRepository with correct email', async () => {
+  test('Should call IGetOneUserByEmailRepository with correct email', async () => {
     const { sut, getOneUserByEmailRepositoryStub } = makeSut()
     const getOneSpy = jest.spyOn(getOneUserByEmailRepositoryStub, 'getOne')
     await sut.auth(makeFakeAuthenticationData())
@@ -94,14 +94,14 @@ describe('UserAuthenticationUsecase', () => {
     expect(generateSpy).toHaveBeenCalledWith('1')
   })
 
-  test('Should call UpdateUserRepository with correct values', async () => {
+  test('Should call IUpdateUserRepository with correct values', async () => {
     const { sut, updateUserRepositoryStub } = makeSut()
     const updateSpy = jest.spyOn(updateUserRepositoryStub, 'update')
     await sut.auth(makeFakeAuthenticationData())
     expect(updateSpy).toHaveBeenCalledWith(1, { accessToken: 'any_token' })
   })
 
-  test('Should throw if GetOneUserByEmailRepository throws', async () => {
+  test('Should throw if IGetOneUserByEmailRepository throws', async () => {
     const { sut, getOneUserByEmailRepositoryStub } = makeSut()
     jest.spyOn(getOneUserByEmailRepositoryStub, 'getOne').mockReturnValueOnce(new Promise((resolve, reject) => reject(new Error())))
     const promise = sut.auth(makeFakeAuthenticationData())
@@ -122,7 +122,7 @@ describe('UserAuthenticationUsecase', () => {
     await expect(promise).rejects.toThrow()
   })
 
-  test('Should throw if UpdateUserRepository throws', async () => {
+  test('Should throw if IUpdateUserRepository throws', async () => {
     const { sut, updateUserRepositoryStub } = makeSut()
     jest.spyOn(updateUserRepositoryStub, 'update').mockReturnValueOnce(new Promise((resolve, reject) => reject(new Error())))
     const promise = sut.auth(makeFakeAuthenticationData())
