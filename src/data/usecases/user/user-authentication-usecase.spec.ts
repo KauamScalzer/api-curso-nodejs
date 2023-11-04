@@ -58,9 +58,23 @@ describe('UserAuthenticationUsecase', () => {
     expect(getOneSpy).toHaveBeenCalledWith('valid_email')
   })
 
+  test('Should call HashComparer with correct values', async () => {
+    const { sut, hashComparerStub } = makeSut()
+    const compareSpy = jest.spyOn(hashComparerStub, 'compare')
+    await sut.auth(makeFakeAuthenticationData())
+    expect(compareSpy).toHaveBeenCalledWith('valid_password', 'hashed_password')
+  })
+
   test('Should throw if GetOneUserByEmailRepository throws', async () => {
     const { sut, getOneUserByEmailRepositoryStub } = makeSut()
     jest.spyOn(getOneUserByEmailRepositoryStub, 'getOne').mockReturnValueOnce(new Promise((resolve, reject) => reject(new Error())))
+    const promise = sut.auth(makeFakeAuthenticationData())
+    await expect(promise).rejects.toThrow()
+  })
+
+  test('Should throw if HashComparer throws', async () => {
+    const { sut, hashComparerStub } = makeSut()
+    jest.spyOn(hashComparerStub, 'compare').mockReturnValueOnce(new Promise((resolve, reject) => reject(new Error())))
     const promise = sut.auth(makeFakeAuthenticationData())
     await expect(promise).rejects.toThrow()
   })
@@ -72,17 +86,10 @@ describe('UserAuthenticationUsecase', () => {
     expect(result).toBeFalsy()
   })
 
-  test('Should call HashComparer with correct password', async () => {
+  test('Should return null if HashComparer returns null', async () => {
     const { sut, hashComparerStub } = makeSut()
-    const compareSpy = jest.spyOn(hashComparerStub, 'compare')
-    await sut.auth(makeFakeAuthenticationData())
-    expect(compareSpy).toHaveBeenCalledWith('valid_password', 'hashed_password')
-  })
-
-  test('Should throw if HashComparer throws', async () => {
-    const { sut, hashComparerStub } = makeSut()
-    jest.spyOn(hashComparerStub, 'compare').mockReturnValueOnce(new Promise((resolve, reject) => reject(new Error())))
-    const promise = sut.auth(makeFakeAuthenticationData())
-    await expect(promise).rejects.toThrow()
+    jest.spyOn(hashComparerStub, 'compare').mockResolvedValueOnce(false)
+    const result = await sut.auth(makeFakeAuthenticationData())
+    expect(result).toBeFalsy()
   })
 })
