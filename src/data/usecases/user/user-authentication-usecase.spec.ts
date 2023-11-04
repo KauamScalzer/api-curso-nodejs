@@ -118,4 +118,10 @@ describe('UserAuthenticationUsecase', () => {
     const result = await sut.auth(makeFakeAuthenticationData())
     expect(result).toBeFalsy()
   })
+
+  test('Should return an acessToken on sucess', async () => {
+    const { sut } = makeSut()
+    const result = await sut.auth(makeFakeAuthenticationData())
+    expect(result).toBe('any_token')
+  })
 })
