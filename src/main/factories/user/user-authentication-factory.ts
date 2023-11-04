@@ -6,15 +6,15 @@ import { EncrypterJwtAdapter } from '../../../infra/criptography/jwt'
 import { CreateLogErrorRepository } from '../../../infra/db/repositories/log-error'
 import { Controller } from '../../../presentation/protocols'
 import { LogControllerDecorator } from '../../decorators'
-import { makeCreateUserValidation } from './create-user-validation-factory'
+import { makeUserAuthenticationValidation } from './user-authentication-validation-factory'
 
 export const makeUserAuthenticationController = (): Controller => {
   const getOneUserByEmailRepository = new GetOneUserByEmailRepository()
   const hashComparerBcryptAdapter = new HashComparerBcryptAdapter()
-  const encrypterJwtAdapter = new EncrypterJwtAdapter('')
+  const encrypterJwtAdapter = new EncrypterJwtAdapter('1')
   const updateUserRepository = new UpdateUserRepository()
   const userAuthenticationUsecase = new UserAuthenticationUsecase(getOneUserByEmailRepository, hashComparerBcryptAdapter, encrypterJwtAdapter, updateUserRepository)
-  const userAuthenticationController = new UserAuthenticationController(userAuthenticationUsecase, makeCreateUserValidation())
+  const userAuthenticationController = new UserAuthenticationController(userAuthenticationUsecase, makeUserAuthenticationValidation())
   const createLogErrorRepository = new CreateLogErrorRepository()
   return new LogControllerDecorator(userAuthenticationController, createLogErrorRepository)
 }
