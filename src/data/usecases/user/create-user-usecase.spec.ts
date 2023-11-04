@@ -1,4 +1,4 @@
-import { Encrypter } from '../../protocols/encrypter'
+import { Encrypter } from '../../protocols/criptography'
 import { CreateUserUsecase } from './create-user-usecase'
 import { CreateUserModel } from '../../../domain/usecases/user'
 import { UserModel } from '../../../domain/models'

@@ -1,6 +1,6 @@
 import { ICreateUserUsecase, CreateUserModel } from '../../../domain/usecases/user'
 import { UserModel } from '../../../domain/models'
-import { Encrypter } from '../../../data/protocols/encrypter'
+import { Encrypter } from '../../protocols/criptography'
 import { CreateUserRepository } from '../../../data/protocols/user'
 
 export class CreateUserUsecase implements ICreateUserUsecase {
