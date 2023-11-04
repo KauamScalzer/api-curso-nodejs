@@ -1,6 +1,6 @@
 import { CreateUserController } from '../../../presentation/controllers/user'
 import { CreateUserUsecase } from '../../../data/usecases/user'
-import { HashBcryptAdapter } from '../../../infra/criptography'
+import { HashBcryptAdapter } from '../../../infra/criptography/bcrypt'
 import { CreateUser } from '../../../infra/db/repositories/user'
 import { CreateLogError } from '../../../infra/db/repositories/log-error'
 import { Controller } from '../../../presentation/protocols'

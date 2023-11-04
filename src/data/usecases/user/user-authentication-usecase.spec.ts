@@ -30,7 +30,7 @@ const makeHashComparer = (): HashComparer => {
 
 const makeEncrypter = (): Encrypter => {
   class EncrypterStub implements Encrypter {
-    async encrypt (value: number): Promise<string> {
+    async encrypt (value: string): Promise<string> {
       return await new Promise(resolve => resolve('any_token'))
     }
   }
@@ -91,7 +91,7 @@ describe('UserAuthenticationUsecase', () => {
     const { sut, encrypterStub } = makeSut()
     const generateSpy = jest.spyOn(encrypterStub, 'encrypt')
     await sut.auth(makeFakeAuthenticationData())
-    expect(generateSpy).toHaveBeenCalledWith(1)
+    expect(generateSpy).toHaveBeenCalledWith('1')
   })
 
   test('Should call UpdateUserRepository with correct values', async () => {
