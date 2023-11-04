@@ -6,5 +6,5 @@ export interface UpdateUserRepositoryParams {
   name?: string
   email?: string
   password?: string
-  acessToken?: string
+  accessToken?: string
 }

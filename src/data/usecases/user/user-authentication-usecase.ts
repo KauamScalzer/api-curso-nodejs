@@ -15,9 +15,9 @@ export class UserAuthenticationUsecase implements IUserAuthenticationUsecase {
     if (user) {
       const isValid = await this.hashComparer.compare(data.password, user.password)
       if (isValid) {
-        const acessToken = await this.encrypter.encrypt(user.id.toString())
-        await this.updateUserRepository.update(user.id, { acessToken })
-        return acessToken
+        const accessToken = await this.encrypter.encrypt(user.id.toString())
+        await this.updateUserRepository.update(user.id, { accessToken })
+        return accessToken
       }
     }
     return null

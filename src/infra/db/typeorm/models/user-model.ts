@@ -13,4 +13,11 @@ export class User extends BaseEntity {
 
   @Column()
   password: string
+
+  @Column({
+    type: 'text',
+    name: 'access_token',
+    nullable: true
+    })
+  accessToken: string
 }

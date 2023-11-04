@@ -98,7 +98,7 @@ describe('UserAuthenticationUsecase', () => {
     const { sut, updateUserRepositoryStub } = makeSut()
     const updateSpy = jest.spyOn(updateUserRepositoryStub, 'update')
     await sut.auth(makeFakeAuthenticationData())
-    expect(updateSpy).toHaveBeenCalledWith(1, { acessToken: 'any_token' })
+    expect(updateSpy).toHaveBeenCalledWith(1, { accessToken: 'any_token' })
   })
 
   test('Should throw if GetOneUserByEmailRepository throws', async () => {
