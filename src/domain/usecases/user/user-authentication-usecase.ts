@@ -3,6 +3,6 @@ export interface UserAuthenticationModel {
   password: string
 }
 
-export interface IUserAuthentication {
+export interface IUserAuthenticationUsecase {
   auth (data: UserAuthenticationModel): Promise<string | null>
 }
