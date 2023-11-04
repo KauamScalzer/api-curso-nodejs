@@ -5,13 +5,14 @@ import { UserAuthenticationModel } from 'domain/usecases/user'
 
 const makeGetOneUserByEmailRepository = (): GetOneUserByEmailRepository => {
   class GetOneUserByEmailRepositoryStub implements GetOneUserByEmailRepository {
-    async getOne (data: string): Promise<UserModel> {
-      return await new Promise(resolve => resolve({
+    async getOne (data: string): Promise<UserModel | null> {
+      const fakeUser: UserModel = {
         id: 1,
         name: 'any_name',
         email: 'any_email',
         password: 'hashed_password'
-      }))
+      }
+      return await new Promise(resolve => resolve(fakeUser))
     }
   }
   return new GetOneUserByEmailRepositoryStub()
@@ -49,5 +50,12 @@ describe('UserAuthenticationUsecase', () => {
     jest.spyOn(getOneUserByEmailRepositoryStub, 'getOne').mockReturnValueOnce(new Promise((resolve, reject) => reject(new Error())))
     const promise = sut.auth(makeFakeAuthenticationData())
     await expect(promise).rejects.toThrow()
+  })
+
+  test('Should return null if GetOneUserByEmailRepository returns null', async () => {
+    const { sut, getOneUserByEmailRepositoryStub } = makeSut()
+    jest.spyOn(getOneUserByEmailRepositoryStub, 'getOne').mockResolvedValueOnce(null)
+    const result = await sut.auth(makeFakeAuthenticationData())
+    expect(result).toBeFalsy()
   })
 })
