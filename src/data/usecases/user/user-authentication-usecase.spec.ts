@@ -1,6 +1,7 @@
 import { UserModel } from 'domain/models'
 import { UserAuthenticationUsecase } from './user-authentication-usecase'
 import { GetOneUserByEmailRepository } from 'data/protocols/user'
+import { UserAuthenticationModel } from 'domain/usecases/user'
 
 const makeGetOneUserByEmailRepository = (): GetOneUserByEmailRepository => {
   class GetOneUserByEmailRepositoryStub implements GetOneUserByEmailRepository {
@@ -30,18 +31,23 @@ const makeSut = (): SutTypes => {
   }
 }
 
+const makeFakeAuthenticationData = (): UserAuthenticationModel => ({
+  email: 'valid_email',
+  password: 'valid_password'
+})
+
 describe('UserAuthenticationUsecase', () => {
   test('Should call GetOneUserByEmailRepository with correct email', async () => {
     const { sut, getOneUserByEmailRepositoryStub } = makeSut()
     const getOneSpy = jest.spyOn(getOneUserByEmailRepositoryStub, 'getOne')
-    await sut.auth({ email: 'valid_email', password: 'valid_password' })
+    await sut.auth(makeFakeAuthenticationData())
     expect(getOneSpy).toHaveBeenCalledWith('valid_email')
   })
 
   test('Should throw if GetOneUserByEmailRepository throws', async () => {
     const { sut, getOneUserByEmailRepositoryStub } = makeSut()
     jest.spyOn(getOneUserByEmailRepositoryStub, 'getOne').mockReturnValueOnce(new Promise((resolve, reject) => reject(new Error())))
-    const promise = sut.auth({ email: 'valid_email', password: 'valid_password' })
+    const promise = sut.auth(makeFakeAuthenticationData())
     await expect(promise).rejects.toThrow()
   })
 })
