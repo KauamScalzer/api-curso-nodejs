@@ -5,7 +5,7 @@ import { CreateUserRepository } from '../../../infra/db/repositories/user'
 import { CreateLogErrorRepository } from '../../../infra/db/repositories/log-error'
 import { Controller } from '../../../presentation/protocols'
 import { LogControllerDecorator } from '../../decorators'
-import { makeCreateUserValidation } from './create-user-validation-factory'
+import { makeCreateUserValidation } from './validations'
 
 export const makeCreateUserController = (): Controller => {
   const salt = 12
