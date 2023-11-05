@@ -1,14 +1,15 @@
 import 'reflect-metadata'
 import { ConnectionOptions, createConnection } from 'typeorm'
+import env from './config/env'
 
 const connectionOptions: ConnectionOptions = {
   type: 'mysql',
   name: 'default',
-  username: 'root',
-  password: 'root',
-  database: 'api',
-  host: 'localhost',
-  port: 3306,
+  username: env.dbUserName,
+  password: env.dbPassword,
+  database: env.dbName,
+  host: env.dbHost,
+  port: env.dbPort as number,
   synchronize: true,
   logging: false,
   entities: [
@@ -20,5 +21,5 @@ const connectionOptions: ConnectionOptions = {
 const connection = createConnection(connectionOptions)
 connection.then(async () => {
   const app = (await import('./config/app')).default
-  app.listen(5050, () => console.log('Server running at localhost:5050'))
+  app.listen(env.port, () => console.log(`Server running at localhost:${env.port}`))
 }).catch(console.error)

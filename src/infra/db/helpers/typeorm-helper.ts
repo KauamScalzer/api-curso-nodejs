@@ -1,3 +1,4 @@
+import env from '../../../main/config/env'
 import { Connection, ConnectionOptions, createConnection, getConnection, getRepository } from 'typeorm'
 
 export const TypeormHelper = {
@@ -7,11 +8,11 @@ export const TypeormHelper = {
     const connectionOptions: ConnectionOptions = {
       type: 'mysql',
       name: 'default',
-      username: 'root',
-      password: 'root',
-      database: 'api_test',
-      host: 'localhost',
-      port: 3306,
+      username: env.dbUserName,
+      password: env.dbPassword,
+      database: env.dbNameTest,
+      host: env.dbHost,
+      port: env.dbPort as number,
       synchronize: true,
       logging: false,
       entities: [
